@@ -7,7 +7,6 @@
 #include "mask.h"
 #include "lbp.h"
 #include "histogram.h"
-
 #include "filename.h"
 #include "distance.h"
 
@@ -59,8 +58,8 @@ int main() {
             source_lbp = LBP::GetLBPImage(image_source);
             input_lbp = LBP::GetLBPImage(image_input);
                 // Temporal
-//                source_lbp.save("source_lbp.png");
-//                input_lbp.save("input_lbp.png");
+                source_lbp.save("source_lbp.png");
+                input_lbp.save("input_lbp.png");
 
             // Se calcula el histograma global de ambas imagenes
             //Histogram source_hist, input_hist;
