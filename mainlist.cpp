@@ -22,11 +22,26 @@ void print_histogram(Histogram hist, string name_img ) {
                   << hist.At(3) << " "
                   << hist.At(2) << " "
                   << hist.At(1) << " "
-                  << hist.At(0) << " "
+                  << hist.At(0) << " T"
                   << name_img << std::endl; 
 
 }
 
+bool load_file( const std::string filename ) {
+    std::ifstream fs;
+    std::string nm;
+    bool bad = false;
+
+    fs.open(filename);
+
+    if ( !fs.is_open() ) return false;
+
+    
+    fs.close();
+
+
+    return true;
+}
 
 int main() {
     string filename = "photo.png"; // saveresult = "imagelpb.png";
