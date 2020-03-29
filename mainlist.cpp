@@ -13,20 +13,19 @@
 
 using namespace std;
 
-void print_histogram(Histogram hist, string name_img ) {
-        std::cout << hist.At(8) << " " 
-                  << hist.At(7) << " "
-                  << hist.At(6) << " "
-                  << hist.At(5) << " "
-                  << hist.At(4) << " "
-                  << hist.At(3) << " "
-                  << hist.At(2) << " "
-                  << hist.At(1) << " "
-                  << hist.At(0) << " T"
-                  << name_img << std::endl; 
+void print_histogram(std::vector<float> hist) {
+        std::cout << hist[8] << " " 
+                  << hist[7] << " "
+                  << hist[6] << " "
+                  << hist[5] << " "
+                  << hist[4] << " "
+                  << hist[3] << " "
+                  << hist[2] << " "
+                  << hist[1] << " "
+                  << hist[0] << std::endl; 
 
 }
-
+/*
 bool load_file( const std::string filename ) {
     std::ifstream fs;
     std::string nm;
@@ -36,46 +35,51 @@ bool load_file( const std::string filename ) {
 
     if ( !fs.is_open() ) return false;
 
-    
+    if ( fs.eof() ) {
+        fs.close();
+        return false;
+    }
+
+    int i = 0;
+    string aux;
+    while ( !fs.eof() ) {
+        fs >> aux;
+        if ( aux == ' ' ) continue;
+
+        i++;
+    }
+
     fs.close();
-
-
     return true;
 }
 
-int main() {
-    string filename = "photo.png"; // saveresult = "imagelpb.png";
+*/
 
-    // Archivos a comparar
-    std::vector <string> cr_filenames;
+int main( int argc, char** argv) {
 
-    // Obtiene todos los nombres de los png
-    GetFilename::GetAll("cr/", ".png", cr_filenames);
-
-    // Vectores que guardan las distancias calculadas
-    std::vector <DistType> intersection_distance, error_distance;
-
-    for (std::string cr_it : cr_filenames) {
-        Image image_input;
-        // Se cargan ambas imagenes
-        image_input.load("cr/"+cr_it);
-
-            if ( !image_input.load("cr/"+cr_it) ) { cout << " - image_input no pudo abrirse" << endl; break; }
-
-
-        image_input.ConvertToScaleGray(); 
-
-        Image input_lbp;
-        input_lbp = LBP::GetLBPImage(image_input);
-            
-        Histogram input_hist;
-        vector<float> normalized_input;
-
-        //normalized_input = input_hist.NormalizedHistogram(input_lbp, 9);
-        input_hist.GetHistogram(input_lbp, 9);
-
-        print_histogram(input_hist, cr_it);
+    if ( argc != 3 ) {
+        std::cout << "usage: mainlist <dir> <name_output>" << std::endl;
+        return 1;
     }
-    
+
+    // Argumentos
+    string direction = argv[1];
+    string name_output = argv[2];
+
+    Image image_input;
+    if ( !image_input.load(direction) ) { std::cout << "El archivo no pudo abrirse" << std::endl; }
+
+    image_input.ConvertToScaleGray(); 
+
+    Image input_lbp;
+    input_lbp = LBP::GetLBPImage(image_input);
+            
+    Histogram input_hist;
+    vector<float> normalized_input;
+
+    normalized_input = input_hist.NormalizedHistogram(input_lbp, 9);
+
+    print_histogram(normalized_input);
+
     return 0;
 }

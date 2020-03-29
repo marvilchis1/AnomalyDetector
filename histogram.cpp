@@ -42,10 +42,8 @@ std::vector<float> Histogram::NormalizedHistogram(Image map, int histogram_size)
     std::vector<float> normalized_histogram;
     float num_elements = map.width() * map.height();
     
-    //std::cout << m_histogram.size() << std::endl;
     for(int i = 0; i < histogram_size; ++i) {
         normalized_histogram.push_back( m_histogram[i]/num_elements);
-        //std::cout << i <<" = " << normalized_histogram[i] << std::endl;
     }
 
     return normalized_histogram;
