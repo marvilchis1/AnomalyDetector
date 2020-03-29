@@ -23,6 +23,7 @@ void print_histogram(std::vector<float> hist) {
                   << hist[2] << " "
                   << hist[1] << " "
                   << hist[0] << std::endl; 
+                  
 
 }
 /*
