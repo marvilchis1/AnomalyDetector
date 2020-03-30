@@ -2,14 +2,15 @@
 #include "lodepng.h"
 #include <string>
 #include <vector>
+#include <fstream>
 #include "image.h"
-#include "fconvolution.h"
-#include "mask.h"
+//#include "fconvolution.h"
+//#include "mask.h"
 #include "lbp.h"
 #include "histogram.h"
 
-#include "filename.h"
-#include "distance.h"
+//#include "filename.h"
+//#include "distance.h"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ void print_histogram(std::vector<float> hist) {
                   << hist[2] << " "
                   << hist[1] << " "
                   << hist[0] << std::endl; 
-                  
+
 
 }
 /*
@@ -59,7 +60,9 @@ bool load_file( const std::string filename ) {
 int main( int argc, char** argv) {
 
     if ( argc != 3 ) {
-        std::cout << "usage: mainlist <dir> <name_output>" << std::endl;
+        std::cout << "usage: mainlist <dir> <output>" << std::endl;
+        std::cout << "<dir> File location." << std::endl;
+        std::cout << "<output> Output file name." << std::endl;
         return 1;
     }
 
