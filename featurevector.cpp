@@ -4,8 +4,6 @@
 #include <vector>
 #include <fstream>
 #include "image.h"
-//#include "fconvolution.h"
-//#include "mask.h"
 #include "lbp.h"
 #include "histogram.h"
 
