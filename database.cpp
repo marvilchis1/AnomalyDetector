@@ -5,7 +5,7 @@ Database::Database() {
 }
 
 Database::Database( std::vector< std::string > data ) {
-    Classify(data);
+    GetLines(data);
 }
 
 std::vector<std::string> Database::Split(const std::string line, char lim){
@@ -19,27 +19,25 @@ std::vector<std::string> Database::Split(const std::string line, char lim){
     return aux_vect;
 }
 
-bool Database::Classify( std::vector<std::string> data ) {
+bool Database::GetLines( std::vector<std::string> data ) {
     for(int i = 0; i < data.size(); ++i) {
         std::vector<std::string> line = Split(data[i]);
         classcontainer.push_back(line);
     }
 
     return true;
-/*
-    for (int i = 0; i < data.size(); ++i){
-        // Se obtiene cada elemento del vector analizado
-        std::vector<std::string> line = Split( data[i] );
-        
-        // Se crea un vector auxiliar que guardara los valores float
-        std::vector<float> aux( line.size() - 1);
-        for ( int j = 0; j < aux.size(); ++j)
-            aux[j] = stof(line[i]);
+}
 
-        // Se asigna a la clave correspondiente el vector con los valores numericos
-        databasecontainer[ line.back() ] = aux;
+Data Database::Classify( std::vector<std::string> data ) {
+    for(int i = 0; i < data.size(); ++i) {
+        std::vector<std::string> line = Split(data[i]);
+
+        DataTuple.Data.push_back(std::vector<std::string>( line.begin(), line.end() - 1));
+        DataTuple.Label.push_back(line.back());
     }
-*/
+
+
+    return DataTuple;
 }
 
 std::vector<std::string> Database::AverageVector(std::string label) {

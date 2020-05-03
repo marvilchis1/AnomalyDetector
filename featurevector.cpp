@@ -25,35 +25,6 @@ void print_histogram(std::vector<float> hist) {
 
 
 }
-/*
-bool load_file( const std::string filename ) {
-    std::ifstream fs;
-    std::string nm;
-    bool bad = false;
-
-    fs.open(filename);
-
-    if ( !fs.is_open() ) return false;
-
-    if ( fs.eof() ) {
-        fs.close();
-        return false;
-    }
-
-    int i = 0;
-    string aux;
-    while ( !fs.eof() ) {
-        fs >> aux;
-        if ( aux == ' ' ) continue;
-
-        i++;
-    }
-
-    fs.close();
-    return true;
-}
-
-*/
 
 int main( int argc, char** argv) {
 

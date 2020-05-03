@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include "database.h"
+//#include <Eigen/Dense>
 
 using namespace std;
+
 void print_vector(std::vector<std::string> vect) {
     for (int i = 0; i < vect.size(); ++i)
         std::cout << vect[i] << " "; 
@@ -12,7 +14,7 @@ void print_vector(std::vector<std::string> vect) {
 int main( int argc, char** argv) {
 
     if ( argc != 2 ) {
-        std::cout << "usage: mainlist <dir>" << std::endl;
+        std::cout << "usage: train <dir>" << std::endl;
         std::cout << "<dir> Text file location." << std::endl;
         return 1;
     }
@@ -49,6 +51,20 @@ int main( int argc, char** argv) {
     print_vector(vc);
     vc = DB.AverageVector("2");
     print_vector(vc);
+
+
+
+    cout << "\n\nDatos y etiqueta\n" << endl;
+
+    Data dt;
+
+    dt = DB.Classify(container);
+    for (int i = 0; i < dt.Label.size(); ++i) {
+        for (int j = 0; j < dt.Data[i].size(); ++j) {
+            std::cout << dt.Data[i][j] << " "; 
+        }
+        std::cout << dt.Label[i] << std::endl;
+    }
 
     return 0;
 }
