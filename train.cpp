@@ -4,12 +4,30 @@
 //#include <Eigen/Dense>
 
 using namespace std;
-
+typedef vector < tuple<vector<float>, string> > vector_tuple; 
+typedef tuple<vector<float>, string > my_tuple;
+/*
 void print_vector(std::vector<std::string> vect) {
     for (int i = 0; i < vect.size(); ++i)
         std::cout << vect[i] << " "; 
     std::cout << std::endl;
 }
+*/
+
+void print_vector(my_tuple tp) {
+
+    std::vector<float> auxvalues;
+    std::string auxlabel;
+
+    std::tie(auxvalues, auxlabel) = tp;
+
+    for(int j = 0; j < auxvalues.size(); ++j)
+        std::cout << auxvalues[j] << " ";
+        
+    std::cout << auxlabel << std::endl;
+
+}
+
 
 int main( int argc, char** argv) {
 
@@ -44,7 +62,8 @@ int main( int argc, char** argv) {
 
     DB.ShowAll();
 
-    std::vector<std::string> vc;
+    my_tuple vc;
+
 
     std::cout << "\nVectores Promedio: " << std::endl;
     vc = DB.AverageVector("1");
@@ -56,15 +75,16 @@ int main( int argc, char** argv) {
 
     cout << "\n\nDatos y etiqueta\n" << endl;
 
-    Data dt;
+    my_tuple dt;
 
-    dt = DB.Classify(container);
+    //dt = DB.Classify(container);
+/*
     for (int i = 0; i < dt.Label.size(); ++i) {
         for (int j = 0; j < dt.Data[i].size(); ++j) {
             std::cout << dt.Data[i][j] << " "; 
         }
         std::cout << dt.Label[i] << std::endl;
     }
-
+*/
     return 0;
 }

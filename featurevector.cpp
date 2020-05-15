@@ -28,16 +28,16 @@ void print_histogram(std::vector<float> hist) {
 
 int main( int argc, char** argv) {
 
-    if ( argc != 3 ) {
-        std::cout << "usage: mainlist <dir> <output>" << std::endl;
+    if ( argc != 2 ) {
+        std::cout << "usage: featurevector <dir>" << std::endl;
         std::cout << "<dir> File location." << std::endl;
-        std::cout << "<output> Output file name." << std::endl;
+        //std::cout << "<output> Output file name." << std::endl;
         return 1;
     }
 
     // Argumentos
     string direction = argv[1];
-    string name_output = argv[2];
+    //string name_output = argv[2];
 
     Image image_input;
     if ( !image_input.load(direction) ) { std::cout << "El archivo no pudo abrirse" << std::endl; }

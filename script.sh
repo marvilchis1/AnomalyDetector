@@ -1,4 +1,4 @@
-#! /bin/bash
+ #! /bin/bash
 
 # Modo de uso:
 # $ ./script.sh <directorio> <salida>
@@ -29,7 +29,7 @@ LIST=$(ls $1/*.png)
 
 touch $2  # crea el archivo de salida
 for file in $LIST ; do
-   ./featurevector $file $2 >> $2
+   ./featurevector $file >> $2
 done
 
 # Nota: El doble >> indica que la salida del programa se agregue al final del

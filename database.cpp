@@ -1,11 +1,14 @@
 #include "database.h"
 
+typedef vector < tuple<vector<float>, string> > vector_tuple; 
+typedef tuple<vector<float>, string > my_tuple;
+
 Database::Database() {
 
 }
 
 Database::Database( std::vector< std::string > data ) {
-    GetLines(data);
+    Classify(data);
 }
 
 std::vector<std::string> Database::Split(const std::string line, char lim){
@@ -19,54 +22,75 @@ std::vector<std::string> Database::Split(const std::string line, char lim){
     return aux_vect;
 }
 
+std::vector<float>  Database::Transform(std::vector<std::string> stringVector) {
+    std::vector<float> floatVector(stringVector.size());
+    std::transform(stringVector.begin(), stringVector.end(), floatVector.begin(), [](const std::string& val)
+    {
+        return std::stof(val);
+    });
+    return floatVector;
+}
+
+/*
 bool Database::GetLines( std::vector<std::string> data ) {
     for(int i = 0; i < data.size(); ++i) {
         std::vector<std::string> line = Split(data[i]);
-        classcontainer.push_back(line);
+        //classcontainer.push_back(line);
     }
 
     return true;
 }
+*/
 
-Data Database::Classify( std::vector<std::string> data ) {
-    for(int i = 0; i < data.size(); ++i) {
-        std::vector<std::string> line = Split(data[i]);
+vector_tuple Database::Classify( std::vector<std::string> stringvector ) {
+    for(int i = 0; i < stringvector.size(); ++i) {
+        std::vector<std::string> line = Split(stringvector[i]);
 
-        DataTuple.Data.push_back(std::vector<std::string>( line.begin(), line.end() - 1));
-        DataTuple.Label.push_back(line.back());
+        std::vector<float> featvect = Transform( std::vector<std::string>( line.begin(), line.end() - 1) );
+        
+        classcontainer.push_back( std::make_tuple(featvect, line.back()) );
     }
 
-
-    return DataTuple;
+    return classcontainer;
 }
 
-std::vector<std::string> Database::AverageVector(std::string label) {
+my_tuple Database::AverageVector(std::string label) {
+    std::vector<float> auxvalues;
+    std::string auxlabel;
 
-    std::vector<float> aux_values( classcontainer[1].size() - 1);
+    std::vector<float> sumvector(std::get<0>(classcontainer[1]).size());
+
     int cont = 0;
     for (int i = 0; i < classcontainer.size(); ++i) {
-        if (classcontainer[i].back() == label) {
-            for (int j = 0; j < aux_values.size(); ++j)
-                aux_values[j] += stof( classcontainer[i][j] );
+        
+        std::tie(auxvalues, auxlabel) = classcontainer[i];
+
+        if (auxlabel == label) {
+            for (int j = 0; j < auxvalues.size(); ++j)
+                sumvector[j] += auxvalues[j];
             cont++;
         }
     }
 
     // Se divide entre el total de vectores correspondientes a la etiqueta
-    std::vector<std::string> result;
-    for (int i = 0; i < aux_values.size(); ++i) {
-        aux_values[i] /= cont;
-        result.push_back( std::to_string(aux_values[i]) );
-    }
-        result.push_back(label);
+    for (int i = 0; i < sumvector.size(); ++i)
+        sumvector[i] /= cont;
     
-    return result;
+    return std::make_tuple(sumvector, label);
 }
 
 void Database::ShowAll() {
+    std::vector<float> auxvalues;
+    std::string auxlabel;
+
     for(int i = 0; i < classcontainer.size(); ++i ){
-        for(int j = 0; j < classcontainer[i].size(); ++j)
-            std::cout << classcontainer[i][j] << " ";
-        std::cout << std::endl;
+
+        std::tie(auxvalues, auxlabel) = classcontainer[i];
+
+        for(int j = 0; j < auxvalues.size(); ++j)
+            std::cout << auxvalues[j] << " ";
+        
+        std::cout << auxlabel << std::endl;
+        
     }
 }
