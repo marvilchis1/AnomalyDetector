@@ -11,35 +11,39 @@
 #include <sstream>
 //#include <Eigen/Dense>
 #include <tuple>
-
-struct Data {
-    std::vector<std::vector<float>> Data;
-    std::vector<std::string> Label;
-};
+#include "distance.h"
 
 using namespace std;
 
-class Database {
-    //std::vector< std::vector<std::string> > classcontainer;
-    //Data DataTuple;
-    typedef vector < tuple<vector<float>, string> > vector_tuple; 
-    typedef tuple<vector<float>, string > my_tuple;
-    vector_tuple classcontainer;
+namespace Database {
+    typedef tuple<vector<double>, double> my_tuple;
+    typedef vector < my_tuple > vector_tuple; 
+    typedef tuple<vector<double>, vector<double>> tuple_vector_double;
 
-    //std::map<std::string, std::vector<float> > databasecontainer;
-    std::vector<std::string> Split(const std::string line, char lim = ' ');
-    std::vector<float> Transform(std::vector<std::string> stringVector);
+    
+    // ****************** Transformacion de datos ******************
+    // Procesa cada linea string y los almacena en una matrix de tipo double
+    // en donde contiene los valores caracteristicos y la etiqueta
+    vector<vector<double>> DataMatrix(vector<string> str_matrix);
+    // Procesa cada linea string y los almacena en un vector de tuplas
+    // donde cada tupla esta formada por: (vector_caracteristicas, etiqueta)
+    vector_tuple TaggedVectors(vector<string> str_matrix);
 
-    public:
-        Database();
-        Database( std::vector<std::string> data );
-        //bool GetLines(std::vector<std::string> data);
-        vector_tuple Classify(std::vector<std::string> stringvector);
-        my_tuple AverageVector(std::string label);
+    
+    // ******************* Operaciones con los datos *****************
+    // Saca el vector promedio de clase recibiendo los vectores sin procesar y la etiqueta
+    my_tuple AverageVector(vector<string> str_matrix, double label);
+    // "" ""  "" """ recibiendo una matriz con los vectores ya transformados
+    my_tuple AverageVector(vector< vector<double> > d_matrix, double label);
 
-        void ShowAll();
+    void Show_Distances(vector<vector<double>> average_vectors, vector<vector<double>> test_vectors);
+
+    // ***************** Visualizacion de datos **********************
+    void ShowAll(vector<vector<double>> d_matrix);
+    void ShowAll(vector_tuple classcontainer);
 
 
-};
+
+}
 
 #endif

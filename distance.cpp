@@ -43,6 +43,39 @@ float Distance::Error(std::vector<float> Ct, std::vector<float> Cr) {
 
     return distance;
 }
+/*
+double Distance::EuclideanDistance(double value1, double value2){
+    //if (vector1.size() != vector2.size() ) return 0;
+
+    double distance = 0.0;
+
+    //for(int i = 0; i < vector1.size(); ++i ) {
+    distance = (value2 - value1) * (value2 - value1);
+
+    distance = std::sqrt((distance) / )
+
+    //}
+
+
+    return distance;
+}
+*/
+
+double Distance::EuclideanDistance(std::vector<double> vector1, std::vector<double> vector2){
+    if (vector1.size() != vector2.size() ) return -1;
+
+    double distance = 0.0;
+    for(int i = 0; i < vector1.size(); ++i )
+        distance += (vector2[i] - vector1[i]) * (vector2[i] - vector1[i]);
+    
+    distance = std::sqrt(distance);
+
+    return distance;
+}
+
+
+
+
 
 bool Distance::IsGreater(DistType A, DistType B) {
     return (A.d > B.d);

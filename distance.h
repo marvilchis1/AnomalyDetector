@@ -19,6 +19,10 @@ namespace Distance {
     float Intersection(std::vector<float> Ct, std::vector<float> Cr);
     float Error (std::vector<float> Ct, std::vector<float> Cr);
 
+    //double EuclideanDistance(double value1, double value2);
+    double EuclideanDistance(std::vector<double> vector1, std::vector<double> vector2);
+
+
     bool IsGreater(DistType A, DistType B);
     bool IsLess(DistType A, DistType B);
 }
