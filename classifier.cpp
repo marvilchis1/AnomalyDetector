@@ -1,80 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include "database.h"
-//#include <Eigen/Dense>
+#include "Eigen/Dense"
 #include "distance.h"
-
-//for
-// Funcion(vector_prueba, vectorclase_promedio) {
-
-//return double;
-//}
+#include "filemanager.h"
 
 using namespace std;
 typedef vector < tuple<vector<float>, string> > vector_tuple; 
 typedef tuple<vector<float>, string > my_tuple;
-
-
-void print_vector(vector<double> d_matrix) {
-    std::cout  << std::endl;
-    for (int i = 0; i < d_matrix.size(); ++i) 
-        std::cout << d_matrix[i] << " ";
-    std::cout << std::endl;
-        
-    
-}
-
-bool ReadFile(string direction) {
-    ifstream input(direction);
-    if ( !input.is_open()) {
-        std::cout << "El archivo: " << direction << "no pudo abrirse" << std::endl;
-        return false;
-    }
-
-    if ( input.eof() ) {
-        input.close();
-        return false;
-    }
-    return true;
-}
-
-// Obtencion de la matriz con los vectores de caracteristicas y su etiquetas
-vector<vector<double>> GetDataMatrix (string direction) {
-    ifstream input(direction);
-
-    // Average Class Vectors
-    string aux_line;
-    vector <string> container;
-    while( getline(input, aux_line) ) 
-        container.push_back(aux_line);
-
-    return Database::DataMatrix(container);
-}
-
-// Se calcula la distancia ecludiana de cada vector de testeo por cada vector promedio de clase.
-// Se imprime en pantalla tanto el vector de testeo analizado así como la distancia respecto a cada clase.
-void ShowDistances(vector<vector<double>> average_vectors, vector<vector<double>> test_vectors) {
-    // El vector almacena en la posicion 0 la distancia al vector promedio analizado, y en el 1 la etiqueta del mismo
-    vector<double> distance_label;
-    distance_label.resize(2);
-    // Vector auxiliar que obtendra las distancias del vector test respecto a cada vector promedio
-    vector<vector<double>> my_distances;
-    // Se itera cada vector test presente en el contenedor
-    for (int i = 0; i < test_vectors.size(); ++i) {
-        my_distances.clear();
-        for (int j = 0; j < average_vectors.size(); ++j) {
-            //test_vectors[i] = vector<double>(test_vectors[i].begin(), test_vectors[i].end()-1 )
-            //average_vectors[j] = vector<double>(average_vectors[j].begin(), average_vectors[j].end()-1 )
-            distance_label[0] =  Distance::EuclideanDistance( vector<double>(test_vectors[i].begin(), test_vectors[i].end()-1), vector<double>(average_vectors[j].begin(), average_vectors[j].end()-1) ) ;            
-            distance_label[1] = average_vectors[j].back();
-            my_distances.push_back(distance_label);
-        }
-        print_vector(test_vectors[i]);
-        Database::ShowAll(my_distances);
-    }
-}
-
-
 
 int main( int argc, char** argv ) {
 
@@ -85,26 +18,58 @@ int main( int argc, char** argv ) {
         std::cout << "<dir3> Text file with vectors to test." << std::endl;
         return 1;
     }
-
     std::string direction1 = argv[1];
-    std::string direction2 = argv[2];
+    std::string direction2 = argv[2];        
     std::string direction3 = argv[3];
+    if ( !( FileManager::CheckFile(direction1) ) ) { return 0; }
+    if ( !( FileManager::CheckFile(direction2) ) ) { return 0; }
+    if ( !( FileManager::CheckFile(direction3) ) ) { return 0; }
+    vector<string> str_matrix1; //= FileManager::ReadFile(direction1);
+    vector<string> str_matrix2; //= FileManager::ReadFile(direction2);
+    vector<string> str_matrix3; //= FileManager::ReadFile(direction2);
 
-    if ( !ReadFile(direction1) ) { return 0; }
-    if ( !ReadFile(direction2) ) { return 0; }
-    if ( !ReadFile(direction3) ) { return 0; }
+    Eigen::IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+
+    // Obtengo numero de renglones y columnas
+    int rows = 0, cols = 0;
+    //std::tie(str_matrix1, rows, cols) = FileManager::ProcessData(direction1);
+    //std::cout << "Renglones = " << rows << " Columnas = " << cols << std::endl;
 
 
+
+
+
+    // ************** Se obtienen las matrices de caracteristicas *****************
     // Matriz con vectores de clase promedio
-    vector<vector<double>> prom_vects = GetDataMatrix(direction1);
+    cout << endl;
+    std::tie(str_matrix1, rows, cols) = FileManager::ProcessData(direction1);
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> prom_vects = FileManager::ToEigenMatrix(str_matrix1, rows, cols);
+    std::cout << prom_vects << std::endl;
+    
     // Matriz con la base de datoss (vectores de carateristicas + etiqueta)
-    vector<vector<double>> base_datos = GetDataMatrix(direction2);
+    cout << endl;
+    std::tie(str_matrix2, rows, cols) = FileManager::ProcessData(direction2);
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> bd_vects = FileManager::ToEigenMatrix(str_matrix2, rows, cols);
+    std::cout << bd_vects << std::endl;
+    
+    std::cout << "Test Matrix " << std::endl;
+
     // Vectores para el testeo
-    vector<vector<double>> test_vects = GetDataMatrix(direction3);
+    std::tie(str_matrix3, rows, cols) = FileManager::ProcessData(direction3);
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_vects = FileManager::ToEigenMatrix(str_matrix3, rows, cols);
+    std::cout << test_vects << std::endl;
+
+    
+    Database::Classify(prom_vects, test_vects);
 
 
-    ShowDistances(prom_vects, test_vects);
 
+
+
+
+    //vector<vector<double>> prom_vects = FileManager::ToDoubleMatrix(direction1);
+    //vector<vector<double>> base_datos = FileManager::ToDoubleMatrix(direction2);
+    //vector<vector<double>> test_vects = FileManager::ToDoubleMatrix(direction3);
 
 
 

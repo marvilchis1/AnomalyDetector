@@ -8,9 +8,10 @@
 #include <algorithm>
 #include <iterator>
 #include <sstream>
-//#include <Eigen/Dense>
+#include "Eigen/Dense"
 #include <tuple>
 #include "distance.h"
+
 
 using namespace std;
 
@@ -24,6 +25,8 @@ namespace Database {
     // Procesa cada linea string y los almacena en una matrix de tipo double
     // en donde contiene los valores caracteristicos y la etiqueta
     vector<vector<double>> DataMatrix(vector<string> str_matrix);
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> DataMatrix2(vector<string> str_matrix);
+
     // Procesa cada linea string y los almacena en un vector de tuplas
     // donde cada tupla esta formada por: (vector_caracteristicas, etiqueta)
     vector_tuple TaggedVectors(vector<string> str_matrix);
@@ -35,6 +38,16 @@ namespace Database {
     // "" ""  "" """ recibiendo una matriz con los vectores ya transformados
     my_tuple AverageVector(vector< vector<double> > d_matrix, double label);
 
+    // Distancia euclidiana
+    
+    
+    void Classify(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix);
+
+    //bool HitsMisses()
+    bool LabelComparator(Eigen::Matrix<double, 1, Eigen::Dynamic> vector, double label_input);
+    //int ClassifyVector(Eigen)
+
+    
     void Show_Distances(vector<vector<double>> average_vectors, vector<vector<double>> test_vectors);
 
     // ***************** Visualizacion de datos **********************

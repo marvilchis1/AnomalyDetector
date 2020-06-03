@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
+#include "Eigen/Dense"
 
 struct DistType {
     float d;
@@ -20,10 +21,13 @@ namespace Distance {
     float Error (std::vector<float> Ct, std::vector<float> Cr);
 
     double EuclideanDistance(std::vector<double> vector1, std::vector<double> vector2);
+    double EuclideanDistance(Eigen::Matrix<double, 1, Eigen::Dynamic> vector1, Eigen::Matrix<double, 1,Eigen::Dynamic> vector2);
+
+    double GetGreater(double A, double B);
 
 
-    bool IsGreater(DistType A, DistType B);
-    bool IsLess(DistType A, DistType B);
+    bool IsGreater(double A, double B);
+    //bool IsLess(DistType A, DistType B);
 }
 
 #endif

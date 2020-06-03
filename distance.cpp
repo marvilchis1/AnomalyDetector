@@ -62,7 +62,7 @@ double Distance::EuclideanDistance(double value1, double value2){
 */
 
 double Distance::EuclideanDistance(std::vector<double> vector1, std::vector<double> vector2){
-    if (vector1.size() != vector2.size() ) return -1;
+    if (vector1.size() != vector2.size()) return -1;
 
     double distance = 0.0;
     for(int i = 0; i < vector1.size(); ++i )
@@ -73,15 +73,37 @@ double Distance::EuclideanDistance(std::vector<double> vector1, std::vector<doub
     return distance;
 }
 
+double Distance::EuclideanDistance(Eigen::Matrix<double, 1, Eigen::Dynamic> vector1, Eigen::Matrix<double, 1, Eigen::Dynamic> vector2){
+    
 
+    if (vector1.rows() != vector2.rows()) return -1;
+    if (vector1.cols() != vector2.cols()) return -1;
 
+    //std::cout << "Rows" << vector1.cols() << std::endl;
+    //std::cout << "Cols" << vector1.cols() << std::endl;
 
+    double distance = 0.0;
+    for (int i = 0; i < vector1.cols(); ++i)
+        distance += (vector2(0,i) - vector1(0,i)) * (vector2(0,i) - vector1(0,i));
+    
+    distance = std::sqrt(distance);
 
-bool Distance::IsGreater(DistType A, DistType B) {
-    return (A.d > B.d);
+    return distance;
 }
 
+
+
+double GetGreater(double A, double B){
+    if ( A > B ) return A;
+    return B;
+}
+
+
+bool Distance::IsGreater(double A, double B) {
+    return (A > B);
+}
+/*
 bool Distance::IsLess(DistType A, DistType B) {
     return (A.d < B.d);
 }
-
+*/

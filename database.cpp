@@ -23,6 +23,32 @@ vector< vector<double> > Database::DataMatrix(vector<string>  str_matrix ){
     return dmatrix;
 }
 
+
+
+Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Database::DataMatrix2(vector<string>  str_matrix ){
+    //vector < vector<double> > dmatrix;
+    //int rows = str_matrix.size();
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> M;
+    
+    for (int i = 0; i != str_matrix.size(); ++i){
+        vector<double> aux_vector;
+        std::istringstream str_values(str_matrix[i]);
+        double d = 0.0;
+
+        int j = 0;
+        while ( str_values >> d ) {
+            //aux_vector.push_back(d);
+            M(i,j) = d;
+            ++j;
+        }
+
+        //dmatrix.push_back(aux_vector);
+    }
+
+    return M;
+}
+
+
 // Se obtiene un vector de tuplas donde cada tupla tiene contenido en tipo double 
 // el vector de caracteristicas + la etiqueta, port medio de un vector de lineas string
 vector_tuple Database::TaggedVectors(vector<string> str_matrix) {
@@ -92,6 +118,60 @@ my_tuple Database::AverageVector(vector< vector<double> > d_matrix, double label
     
     return std::make_tuple(sumvector, label);
 }
+
+
+
+
+void Database::Classify(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix) {
+    // El vector almacena en la posicion 0 la distancia al vector promedio analizado, y en el 1 la etiqueta del mismo
+    vector<double> distance_label;
+    distance_label.resize(2);
+    // Vector auxiliar que obtendra las distancias del vector test respecto a cada vector promedio
+    vector<vector<double>> my_distances;
+
+    double max_distance = 1;
+    double current_distance = 1;
+
+    double max_label;
+    double current_label;
+
+    // Se itera cada vector test presente en el contenedor
+    for (int i = 0; i < test_matrix.rows(); ++i) {
+        //my_distances.clear();
+        max_distance = 1;
+        max_label = 1;
+        for (int j = 0; j < average_matrix.rows(); ++j) {
+            current_distance =  Distance::EuclideanDistance( test_matrix(i, Eigen::seq(0, Eigen::last-1)), average_matrix(j, Eigen::seq(0, Eigen::last-1)) );                        
+            current_label = average_matrix(j, average_matrix.cols()-1);
+            
+            if ( current_distance < max_distance){
+                max_distance = current_distance;
+                max_label = current_label;
+            }
+
+        }
+        
+        //std::cout << max_distance << std::endl;
+        //std::cout << max_label << std::endl;
+        //std::cout << std::endl;
+
+        if( Database::LabelComparator( test_matrix(i, Eigen::all), max_label)  )
+            std::cout << "Acierto" << std::endl;   
+    }
+}
+
+bool Database::LabelComparator(Eigen::Matrix<double, 1, Eigen::Dynamic> vector, double label_input){
+
+    if (vector(0, Eigen::last) == label_input )
+        return true;
+
+    return false;
+}
+
+
+
+
+
 
 /*
 void Distance::ShowDistances(vector<vector<double>> average_vectors, vector<vector<double>> test_vectors) {

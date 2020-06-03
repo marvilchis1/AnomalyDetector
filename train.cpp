@@ -17,8 +17,8 @@ void print_vector(my_tuple tp) {
 
     for(int j = 0; j < auxvalues.size(); ++j)
         std::cout << auxvalues[j] << " ";
-        
-    std::cout << "label" << auxlabel << std::endl;
+
+    std::cout << auxlabel << std::endl;
 
 }
 
@@ -56,10 +56,6 @@ int main( int argc, char** argv) {
     vector_tuple DBT = Database::TaggedVectors(container);
 
 
-    //DB.ShowAll();
-
-    //Database::ShowAll(DBT);
-
     my_tuple v_tuples1, v_tuples2;
 
     std::cout << "\nVectores Promedio: " << std::endl;
@@ -67,6 +63,16 @@ int main( int argc, char** argv) {
     print_vector(v_tuples1);
     v_tuples2 = Database::AverageVector(DBD, 1);
     print_vector(v_tuples2);
+
+
+    std::cout << "\nVectores Promedio: " << std::endl;
+    v_tuples1 = Database::AverageVector(container, 2);
+    print_vector(v_tuples1);
+    v_tuples2 = Database::AverageVector(DBD, 2);
+    print_vector(v_tuples2);
+
+
+
 
     return 0;
 }
