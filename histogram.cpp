@@ -86,7 +86,6 @@ void Histogram::CreateUniformHistogram(Image map) {
         for( int x = 0; x < map.width(); ++x) {
             // Se suma 1 para que sea multiplo de 2
             aux = log2( map.at(x,y).y + 1);
-            //std::cout << "Map " << map.at(x,y).y << std::endl;
             m_histogram[aux] += 1;
         }
     }
@@ -119,9 +118,5 @@ std::vector< std::vector<int> > SubmapsLBPImage( Image map, int submaplength) {
     return submaps;
 }
 
-/*
-std::vector< std::vector<unsigned int> > SubmapsLBPVector( std::vector<int> map, int submap_length, int mapwidth, int mapheight) {
 
-}
-*/
 

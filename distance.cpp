@@ -102,8 +102,12 @@ double GetGreater(double A, double B){
 bool Distance::IsGreater(double A, double B) {
     return (A > B);
 }
-/*
-bool Distance::IsLess(DistType A, DistType B) {
+
+bool Distance::IsGreaterD(DistType A, DistType B) {
+    return (A.d > B.d);
+}
+
+bool Distance::IsLessD(DistType A, DistType B) {
     return (A.d < B.d);
 }
-*/
+

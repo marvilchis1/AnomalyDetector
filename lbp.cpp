@@ -21,7 +21,6 @@ Image LBP::GetLBPImage(Image input) {
 
             bitssum = LBP::Uniform(bitssum);
             bitssum = LBP::RotationInvariant(bitssum);
-            //std::cout << int(bitssum) << std::endl;
             output.at(x,y).y = bitssum;
         }
     }
@@ -88,22 +87,6 @@ unsigned char LBP::Uniform( unsigned char pattern ) {
     }
 
     return pattern;
-/*
-    for (int i = 0; i < 7; i++) {
-        std::cout << (comp >> i ) << " " << (comp >> (i+1)) << std::endl;
-        if ( ((comp >> i) & pattern)  !=  ( (comp >> (i+1) ) & pattern) ) {
-            //std::cout << (comp >> i ) << " " << (comp >> (i+1)) << std::endl;
-            transitions++;
-        }
-        //comp >>= 1;
-    }
-    std::cout << "Transitions: "<<transitions << std::endl;
-    if (transitions > 2) return 0x00;
-    //if ( transitions == 1 ) {
-    //if ( (comp & pattern)  !=  ( (comp >> 7) & pattern) )  
-    //}
 
-    return pattern;
-*/
 }
 

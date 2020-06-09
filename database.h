@@ -25,11 +25,12 @@ namespace Database {
     // Procesa cada linea string y los almacena en una matrix de tipo double
     // en donde contiene los valores caracteristicos y la etiqueta
     vector<vector<double>> DataMatrix(vector<string> str_matrix);
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> DataMatrix2(vector<string> str_matrix);
-
     // Procesa cada linea string y los almacena en un vector de tuplas
     // donde cada tupla esta formada por: (vector_caracteristicas, etiqueta)
     vector_tuple TaggedVectors(vector<string> str_matrix);
+    // Procesa cada linea string y los almacena en una matrix Eigen
+    // en donde contiene los valores caracteristicos
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> DataEigenMatrix(vector<string> str_matrix);
 
     
     // ******************* Operaciones con los datos *****************
@@ -38,18 +39,20 @@ namespace Database {
     // "" ""  "" """ recibiendo una matriz con los vectores ya transformados
     my_tuple AverageVector(vector< vector<double> > d_matrix, double label);
 
-    // Distancia euclidiana
-    
-    
+    // Calculo de la distancia euclidiana entre un vector de testeo y el conjunto de vectores promedio
+    vector<double> CalculateDistance(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix);
+    // Asignacion de clase estimada a un vector de testeo
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> ClassAssignment (Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix);
+    // Conteo de aciertos y desaciertos
+    void HitsMisses(Eigen::MatrixXd estimated_classes, Eigen::MatrixXd real_classes);
+    // Clasificacion
     void Classify(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix);
 
-    //bool HitsMisses()
+    // Comparador de aciertos-fallos
     bool LabelComparator(Eigen::Matrix<double, 1, Eigen::Dynamic> vector, double label_input);
     //int ClassifyVector(Eigen)
 
     
-    void Show_Distances(vector<vector<double>> average_vectors, vector<vector<double>> test_vectors);
-
     // ***************** Visualizacion de datos **********************
     void ShowAll(vector<vector<double>> d_matrix);
     void ShowAll(vector_tuple classcontainer);

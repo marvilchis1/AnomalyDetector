@@ -6,7 +6,6 @@
 
 namespace LBP {
     Image GetLBPImage(const Image input);
-    //Image GetImageLBP
     std::vector<int> LBP(Image input);
 
     unsigned char RotationInvariant( unsigned char pattern );

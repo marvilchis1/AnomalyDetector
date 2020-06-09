@@ -25,7 +25,6 @@ namespace FileManager{
     // Convierte un archivo ya previamente leido en una matrix de tipo eigen
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> ToEigenMatrix(vector<string> direction, int nrows, int ncols);
     // Convertir un objeto string a una matriz de tipo double
-    
     //vector<vector<double>> ToDoubleMatrix (string direction);
     
     // No necesario

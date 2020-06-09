@@ -27,7 +27,8 @@ namespace Distance {
 
 
     bool IsGreater(double A, double B);
-    //bool IsLess(DistType A, DistType B);
+    bool IsGreaterD(DistType A, DistType B);
+    bool IsLessD(DistType A, DistType B);
 }
 
 #endif

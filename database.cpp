@@ -25,7 +25,7 @@ vector< vector<double> > Database::DataMatrix(vector<string>  str_matrix ){
 
 
 
-Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Database::DataMatrix2(vector<string>  str_matrix ){
+Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Database::DataEigenMatrix(vector<string>  str_matrix ){
     //vector < vector<double> > dmatrix;
     //int rows = str_matrix.size();
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> M;
@@ -119,45 +119,90 @@ my_tuple Database::AverageVector(vector< vector<double> > d_matrix, double label
     return std::make_tuple(sumvector, label);
 }
 
-
-
-
-void Database::Classify(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix) {
+vector<double> Database::CalculateDistance(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix) {
     // El vector almacena en la posicion 0 la distancia al vector promedio analizado, y en el 1 la etiqueta del mismo
     vector<double> distance_label;
     distance_label.resize(2);
     // Vector auxiliar que obtendra las distancias del vector test respecto a cada vector promedio
-    vector<vector<double>> my_distances;
 
     double max_distance = 1;
     double current_distance = 1;
-
     double max_label;
     double current_label;
 
+    for (int i = 0; i < average_matrix.rows(); ++i) {
+        current_distance =  Distance::EuclideanDistance( test_matrix(0, Eigen::seq(0, Eigen::last-1)), average_matrix(i, Eigen::seq(0, Eigen::last-1)) );                        
+        current_label = average_matrix(i, average_matrix.cols()-1);
+            
+        if ( current_distance < max_distance){
+            max_distance = current_distance;
+            max_label = current_label;
+        }
+
+    }
+        
+    distance_label[0] = max_distance;
+    distance_label[1] = max_label;
+
+
+    return distance_label;
+}
+
+Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Database::ClassAssignment(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix) {
+    // El vector almacena en la posicion 0 la distancia al vector promedio analizado, y en el 1 la etiqueta del mismo
+    vector<double> distance_label;
+
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic > estimated_classes;
+
+    estimated_classes.resize(test_matrix.rows(), test_matrix.cols() );
+
     // Se itera cada vector test presente en el contenedor
     for (int i = 0; i < test_matrix.rows(); ++i) {
-        //my_distances.clear();
-        max_distance = 1;
-        max_label = 1;
-        for (int j = 0; j < average_matrix.rows(); ++j) {
-            current_distance =  Distance::EuclideanDistance( test_matrix(i, Eigen::seq(0, Eigen::last-1)), average_matrix(j, Eigen::seq(0, Eigen::last-1)) );                        
-            current_label = average_matrix(j, average_matrix.cols()-1);
-            
-            if ( current_distance < max_distance){
-                max_distance = current_distance;
-                max_label = current_label;
-            }
+        // Se obtiene la etiqueta con el valor más menor
+        distance_label =  Database::CalculateDistance( test_matrix(i, Eigen::all ), average_matrix );                        
+        estimated_classes(i, Eigen::all) = test_matrix(i, Eigen::all);
+        estimated_classes(i, estimated_classes.cols() - 1) = distance_label[1];
+    }
 
+    return estimated_classes;
+}
+
+void Database::HitsMisses(Eigen::MatrixXd estimated_classes, Eigen::MatrixXd real_classes) {
+    if (estimated_classes.rows() != real_classes.rows()) return;
+    if (estimated_classes.cols() != real_classes.cols()) return;
+    
+    int hits = 0;
+    int misses = 0;
+    
+    for(int i = 0; i < estimated_classes.rows(); ++i){
+
+        if ( estimated_classes(i, estimated_classes.cols() - 1) == real_classes(i, real_classes.cols() - 1) ) {
+            hits++;
+        }
+        else{
+            misses++;
         }
         
-        //std::cout << max_distance << std::endl;
-        //std::cout << max_label << std::endl;
-        //std::cout << std::endl;
-
-        if( Database::LabelComparator( test_matrix(i, Eigen::all), max_label)  )
-            std::cout << "Acierto" << std::endl;   
     }
+
+    std::cout << "Aciertos: "<< (hits*100) / estimated_classes.rows() << "%" << std::endl;
+    std::cout << "Errores: "<< (misses*100) / estimated_classes.rows() << "%" << std::endl;
+
+
+}
+
+
+void Database::Classify(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix) {
+    
+    Eigen::MatrixXd estimated_classes = Database::ClassAssignment(average_matrix, test_matrix);
+
+
+    std::cout <<  "Estimated Classes" << std::endl;
+    std::cout << estimated_classes << std::endl;
+    std::cout << std::endl;
+    Database::HitsMisses(estimated_classes, test_matrix);
+
+
 }
 
 bool Database::LabelComparator(Eigen::Matrix<double, 1, Eigen::Dynamic> vector, double label_input){
@@ -173,39 +218,7 @@ bool Database::LabelComparator(Eigen::Matrix<double, 1, Eigen::Dynamic> vector, 
 
 
 
-/*
-void Distance::ShowDistances(vector<vector<double>> average_vectors, vector<vector<double>> test_vectors) {
-    double idclass = 0;
 
-    // El vector almacena en el posicion 0 la distancia al vector promedio analizado, 
-    // y en el 1 la etiqueta del mismo
-    vector<double> distance_label(2);
-    // Vector auxiliar que obtendra las distancias del vector test respecto a cada vector promedio
-    vector<vector<double>> my_distances;
-
-    // Tupla (vector_test, distancia, preddicion_etiqueta)
-
-
-    // Se itera cada vector test presente en el contenedor
-    for (int i = 0; i < test_vectors.size(); ++i) {
-        distance_label.clear();
-        my_distances.clear();
-        
-        for (int j = 0; j < average_vectors.size(); ++j) {
-            //test_vectors[i] = vector<double>(test_vectors[i].begin(), test_vectors[i].end()-1 )
-            //average_vectors[j] = vector<double>(average_vectors[j].begin(), average_vectors[j].end()-1 )
-
-            distance_label[0] =  Distance::EuclideanDistance( vector<double>(test_vectors[i].begin(), test_vectors[i].end()-1), vector<double>(average_vectors[j].begin(), average_vectors[j].end()-1) ) ;            
-            distance_label[1] = average_vectors[j].back();
-            my_distances.push_back(distance_label);
-        }
-    }
-
-    
-
-    //return std::make_tuple( );
-}
-*/
 
 
 

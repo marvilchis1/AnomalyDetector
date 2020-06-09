@@ -65,8 +65,8 @@ int main() {
             //Histogram source_hist, input_hist;
             vector<float> normalized_source, normalized_input;
 
-            normalized_source = source_hist.NormalizedHistogram(source_lbp, 9);
-            normalized_input = input_hist.NormalizedHistogram(input_lbp, 9);
+            normalized_source = source_hist.NormalizedHistogram(source_lbp);
+            normalized_input = input_hist.NormalizedHistogram(input_lbp);
             //source_hist.GetHistogram(source_lbp, 256);
             //input_hist.GetHistogram(input_lbp, 256);
 
@@ -91,14 +91,14 @@ int main() {
     }
 
 
-    std::sort(intersection_distance.begin(), intersection_distance.end(), Distance::IsGreater);
+    std::sort(intersection_distance.begin(), intersection_distance.end(), Distance::IsGreaterD);
 
     for(int i = 0; i < intersection_distance.size(); ++i) 
         std::cout << "distancia: " << intersection_distance[i].d << "    par: " << intersection_distance[i].ref1 << " & " << intersection_distance[i].ref2 << std::endl;
 
     std::cout << "\n\n\n" << std::endl;
 
-    std::sort(error_distance.begin(), error_distance.end(), Distance::IsLess);
+    std::sort(error_distance.begin(), error_distance.end(), Distance::IsLessD);
     
     for(int i = 0; i < error_distance.size(); ++i)
         std::cout << "distancia: " << error_distance[i].d << "  par: " << error_distance[i].ref1 << " & " << " & " << error_distance[i].ref2 << std::endl;

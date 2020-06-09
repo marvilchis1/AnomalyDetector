@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "database.h"
-//#include <Eigen/Dense>
+#include "Eigen/Dense"
 
 using namespace std;
 typedef tuple<vector<double>, double> my_tuple;
@@ -25,14 +25,16 @@ void print_vector(my_tuple tp) {
 
 int main( int argc, char** argv) {
 
-    if ( argc != 2 ) {
-        std::cout << "usage: train <dir>" << std::endl;
+    if ( argc != 3 ) {
+        std::cout << "usage: average_vector <dir> <label>" << std::endl;
         std::cout << "<dir> Text file location." << std::endl;
+        std::cout << "<label> label of the class to calculate the average ." << std::endl;
         return 1;
     }
 
     // Argumentos
     std::string direction = argv[1];
+    double label = stod(argv[2]);
 
     ifstream input(direction);
 
@@ -58,18 +60,13 @@ int main( int argc, char** argv) {
 
     my_tuple v_tuples1, v_tuples2;
 
-    std::cout << "\nVectores Promedio: " << std::endl;
-    v_tuples1 = Database::AverageVector(container, 1);
+    //std::cout << "\nVectores Promedio: " << std::endl;
+    v_tuples1 = Database::AverageVector(container, label);
     print_vector(v_tuples1);
-    v_tuples2 = Database::AverageVector(DBD, 1);
-    print_vector(v_tuples2);
+    //v_tuples2 = Database::AverageVector(DBD, 1);
+    //print_vector(v_tuples2);
 
 
-    std::cout << "\nVectores Promedio: " << std::endl;
-    v_tuples1 = Database::AverageVector(container, 2);
-    print_vector(v_tuples1);
-    v_tuples2 = Database::AverageVector(DBD, 2);
-    print_vector(v_tuples2);
 
 
 

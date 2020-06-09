@@ -35,4 +35,3 @@ done
 # Nota: El doble >> indica que la salida del programa se agregue al final del
 # archivo especificado en $2. Si se usa > se sobreescribe el archivo cada vez,
 # que no es lo que se desea.
-
