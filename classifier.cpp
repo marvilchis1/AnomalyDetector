@@ -11,71 +11,41 @@ typedef tuple<vector<float>, string > my_tuple;
 
 int main( int argc, char** argv ) {
 
-    if ( argc != 4 ) {
-        std::cout << "usage:classifier <dir1> <dir2> <dir3>" << std::endl;
-        std::cout << "<dir1> Text file with average class vectors." << std::endl;
-        std::cout << "<dir2> Text file cointaining the database with feature vectors." << std::endl;
-        std::cout << "<dir3> Text file with vectors to test." << std::endl;
+    if ( argc != 2 ) {
+        std::cout << "usage:classifier <dir>" << std::endl;
+        //std::cout << "<dir1> Text file with average class vectors." << std::endl;
+        std::cout << "<dir> Text file cointaining the database with feature vectors." << std::endl;
+        //std::cout << "<dir3> Text file with vectors to test." << std::endl;
         return 1;
     }
-    std::string direction1 = argv[1];
-    std::string direction2 = argv[2];        
-    std::string direction3 = argv[3];
-    if ( !( FileManager::CheckFile(direction1) ) ) { return 0; }
-    if ( !( FileManager::CheckFile(direction2) ) ) { return 0; }
-    if ( !( FileManager::CheckFile(direction3) ) ) { return 0; }
-    vector<string> str_matrix1; 
-    vector<string> str_matrix2;
-    vector<string> str_matrix3; 
 
-    Eigen::IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+    std::string direction = argv[1];        
+    if ( !( FileManager::CheckFile(direction) ) ) { return 0; }
+    vector<string> str_matrix;
+    //Eigen::IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
 
     // Obtengo numero de renglones y columnas
     int rows = 0, cols = 0;
 
-    // ************** Se obtienen las matrices de caracteristicas *****************
-    // Matriz con vectores de clase promedio
+    // Matriz con la base de datos (vectores de carateristicas + etiqueta)
     cout << endl;
-    std::tie(str_matrix1, rows, cols) = FileManager::ProcessData(direction1);
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> prom_vects = FileManager::ToEigenMatrix(str_matrix1, rows, cols);
-    //std::cout << prom_vects << std::endl;
+    std::tie(str_matrix, rows, cols) = FileManager::ProcessData(direction);
+    Eigen::MatrixXd bd_matrix = FileManager::ToEigenMatrix(str_matrix, rows, cols);
     
-    // Matriz con la base de datoss (vectores de carateristicas + etiqueta)
-    cout << endl;
-    std::tie(str_matrix2, rows, cols) = FileManager::ProcessData(direction2);
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> bd_vects = FileManager::ToEigenMatrix(str_matrix2, rows, cols);
-    //std::cout << bd_vects << std::endl;
+    // Se fragmenta una clase para obligar a que se equivoque
+    Eigen::MatrixXd mod_matrix = Database::ModifyClass(bd_matrix);
+
+    // Se obtiene la matrix de entrenamiento y la de testeo
+    Eigen::MatrixXd train_matrix, test_matrix;
+    std::tie(train_matrix, test_matrix) = Database::TrainTestVectors(mod_matrix);
     
-    //std::cout << "Test Matrix " << std::endl;
+    Eigen::MatrixXd average_matrix = Database::AverageMatrix(train_matrix);
 
-    // Vectores para el testeo
-    std::tie(str_matrix3, rows, cols) = FileManager::ProcessData(direction3);
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_vects = FileManager::ToEigenMatrix(str_matrix3, rows, cols);
-    //std::cout << test_vects << std::endl;
-
-    std::cout << std::endl;
+    cout << average_matrix << endl;
+    //std::cout << std::endl;
     
-    Database::Classify(prom_vects, test_vects);
-
-
-
-
-
-
-    //vector<vector<double>> prom_vects = FileManager::ToDoubleMatrix(direction1);
-    //vector<vector<double>> base_datos = FileManager::ToDoubleMatrix(direction2);
-    //vector<vector<double>> test_vects = FileManager::ToDoubleMatrix(direction3);
-
-
-
-    //std::cout << "\nVectores de clase promedio: " << std::endl;
-    //Database::ShowAll(ACV_DB);
-    //std::cout << "\nVectores de caracteristicas: " << std::endl;
-    //Database::ShowAll(FV_DB);
-    //std::cout << "\nVectores de Test: " << std::endl;
-    //Database::ShowAll(VT_DB);
-
-
+    Database::Classify(average_matrix, test_matrix);
+    //Database::Classify(average_matrix, test_matrix);
 
     return 0;
 }
