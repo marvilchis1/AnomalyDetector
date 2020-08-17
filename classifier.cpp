@@ -33,16 +33,22 @@ int main( int argc, char** argv ) {
     Eigen::MatrixXd bd_matrix = FileManager::ToEigenMatrix(str_matrix, rows, cols);
     
     // Se fragmenta una clase para obligar a que se equivoque
-    Eigen::MatrixXd mod_matrix = Database::ModifyClass(bd_matrix);
+    //Eigen::MatrixXd mod_matrix = Database::ModifyClass(bd_matrix);
+    //Eigen::MatrixXd mod_matrix2 = Database::ModifyClass(mod_matrix);
 
     // Se obtiene la matrix de entrenamiento y la de testeo
     Eigen::MatrixXd train_matrix, test_matrix;
-    std::tie(train_matrix, test_matrix) = Database::TrainTestVectors(mod_matrix);
+    std::tie(train_matrix, test_matrix) = Database::TrainTestVectors(bd_matrix);
     
     Eigen::MatrixXd average_matrix = Database::AverageMatrix(train_matrix);
 
+
+    cout << "Average Matrix" << endl;
     cout << average_matrix << endl;
     //std::cout << std::endl;
+
+    //cout << "Test Matrix" << endl;
+    //cout << test_matrix << endl;
     
     Database::Classify(average_matrix, test_matrix);
     //Database::Classify(average_matrix, test_matrix);
