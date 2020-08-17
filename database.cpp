@@ -232,7 +232,7 @@ Eigen::MatrixXd Database::AverageMatrix(Eigen::MatrixXd matrix) {
     return average_matrix;
 }
 
-vector<double> Database::CalculateDistance(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix) {
+vector<double> Database::CalculateDistance(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_row) {
     // El vector almacena en la posicion 0 la distancia al vector promedio analizado, y en el 1 la etiqueta del mismo
     vector<double> distance_label;
     distance_label.resize(2);
@@ -244,7 +244,7 @@ vector<double> Database::CalculateDistance(Eigen::Matrix<double, Eigen::Dynamic,
     double current_label;
 
     for (int i = 0; i < average_matrix.rows(); ++i) {
-        current_distance =  Distance::EuclideanDistance( test_matrix(0, Eigen::seq(0, Eigen::last-1)), average_matrix(i, Eigen::seq(0, Eigen::last-1)) );                        
+        current_distance =  Distance::EuclideanDistance( test_row(0, Eigen::seq(0, Eigen::last-1)), average_matrix(i, Eigen::seq(0, Eigen::last-1)) );                        
         current_label = average_matrix(i, average_matrix.cols()-1);
             
         if ( current_distance < max_distance ){
@@ -272,7 +272,7 @@ Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Database::ClassAssignment(
     // Se itera cada vector test presente en el contenedor
     for (int i = 0; i < test_matrix.rows(); ++i) {
         // Se obtiene la etiqueta con el valor más menor
-        distance_label =  Database::CalculateDistance( test_matrix(i, Eigen::all ), average_matrix );                        
+        distance_label =  Database::CalculateDistance( average_matrix, test_matrix(i, Eigen::all )); // ACA EL ERROR                     
         estimated_classes(i, Eigen::seq(0, Eigen::last-1) ) = test_matrix(i, Eigen::seq(0, Eigen::last-1) );
         estimated_classes(i, estimated_classes.cols() - 1) = distance_label[1];
     }
@@ -310,6 +310,7 @@ void Database::Classify(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> av
     //std::cout << estimated_classes << std::endl;
     //std::cout << std::endl;
     Database::HitsMisses(estimated_classes, test_matrix);
+
 
 }
 

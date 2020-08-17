@@ -58,7 +58,7 @@ namespace Database {
     Eigen::MatrixXd AverageMatrix(Eigen::MatrixXd matrix);
 
     // Calculo de la distancia euclidiana entre un vector de testeo y el conjunto de vectores promedio
-    vector<double> CalculateDistance(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix);
+    vector<double> CalculateDistance(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_row);
     // Asignacion de clase estimada a un vector de testeo
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> ClassAssignment (Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> average_matrix, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> test_matrix);
     
